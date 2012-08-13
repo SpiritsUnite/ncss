@@ -1,0 +1,5 @@
+dog Hund
+home Haus
+hound Hund
+house Haus
+interoffice Haus
