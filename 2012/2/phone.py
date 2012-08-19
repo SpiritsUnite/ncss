@@ -1,0 +1,1 @@
+print '\n'.join(x[1] for x in __import__('re').findall('(^|\D)(((\(0\d\)|0\d|\+61[ -]\d)[ -])?\d{4}[ -]?\d{4}|(\+61[ -]|0)\d{3}([ -]?\d{3}){2})\D',' '.join(open('numbers.txt'))))
