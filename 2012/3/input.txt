@@ -1,0 +1,5 @@
+West|NNP|I-MISC Indian|NNP|I-MISC all-rounder|NN|O Phil|NNP|I-PER Simmons|NNP|I-PER
+took|VBD|O four|CD|O for|IN|O 38|CD|O on|IN|O Friday|NNP|O as|IN|O
+Leicestershire|NNP|I-ORG beat|VBD|O Somerset|NNP|I-ORG by|IN|O an|DT|O innings|NN|O
+and|CC|O 39|CD|O runs|NNS|O in|IN|O two|CD|O days|NNS|O to|TO|O take|VB|O over|IN|O
+at|IN|O the|DT|O head|NN|O of|IN|O the|DT|O county|NN|O championship|NN|O .|.|O
