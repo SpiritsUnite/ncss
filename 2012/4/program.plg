@@ -1,0 +1,12 @@
+parents(anakin, shmi, theforce).
+parents(sola, jobal, ruwee).
+parents(padme, jobal, ruwee).
+parents(luke, padme, anakin).
+parents(leia, padme, anakin).
+parents(asdf, aoeu, aoeu)
+
+?- parents(sola, jobal, ruwee).
+?- parents(anakin, shmi, F).
+?- parents(X, padme, anakin).
+?- parents(padme, M, F).
+?- parents(C, X, X).
