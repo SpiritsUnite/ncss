@@ -1,0 +1,86 @@
+separator(newTestData).
+
+fact(x).
+fact(y, y).
+fact(y, m).
+rule (X, Y, M) :- fact(X), fact(M), fact(Y).
+
+?- rule(X, Y, M).
+?- parents(X, Y, Z).
+
+eat(lion, bob).
+eat(lion, dog).
+eat(dog, cat).
+eat(cat, bird).
+eat(bird, worm).
+eat(cake, worm).
+
+caneat(X,Y) :- eat(X, Y).
+caneat(X,Y) :- eat(X, B), caneat(B, Y).
+
+?- caneat(lion, worm).
+
+?- separator(X).
+
+grandMotherOf(X,GM) :- motherOf(X,M), motherOf(M,GM).
+grandMotherOf(X,GM) :- fatherOf(X,F), motherOf(F,GM).
+fatherOf(tom,dick).
+fatherOf(dick,harry).
+fatherOf(jane,harry).
+motherOf(tom,judy).
+motherOf(dick,mary).
+motherOf(jane,mary).
+
+?- grandMotherOf(tom,GM).
+
+?- separator(X).
+a(X) :- b(X), c(X), d(X).
+a(X) :- c(X), d(X).
+a(X) :- d(X).
+
+b(lol).
+b(a).                            
+b(y).
+b(z).
+d(zz).
+d(answer).
+d(lol).
+c(m).
+c(heh).
+c(lol).
+
+?- a(X).
+
+?- separator(X).
+rainy(fruit).
+rainy(answer).
+rainy(bob).
+
+cold(fruit).
+cold(answer).
+
+hot(fruit).
+hot(answer).
+
+snowy(X) :- rainy(X), cold(X), hot(X).
+
+?- snowy(X).
+
+?- separator(X).
+orbits(mercury, sun).
+orbits(venus, sun).
+orbits(earth, sun).
+orbits(jupiter, sun).
+orbits(moon, earth).
+orbits(titan, jupiter).
+planet(S) :- orbits(S, sun).
+satellite(S) :- orbits(S, P), planet(P).
+
+?- satellite(S). 
+
+?- separator(X).
+person(joe).
+person(bloggs).
+person(bloggs, shmick).
+test(X, Y) :- person(Y), person(Y, X).
+?- test(X, Y).

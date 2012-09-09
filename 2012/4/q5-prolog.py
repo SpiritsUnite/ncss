@@ -3,6 +3,8 @@ for line in open("program.plg"):
     line = line.strip()
     if not line:
         continue
+
+    # QUERY!
     if line.startswith("?-"):
         line = line[2:].strip()
         rule = line[:line.index('(')]
@@ -36,8 +38,8 @@ for line in open("program.plg"):
         else:
             print "no"
     else:
-        rule = line[:line.index('(')]
-        value = map(str.strip, line[line.index('(') + 1:line.index(')')].split(","))
+        rule, value = line.split('(', 1)
+        value = map(str.strip, value[:value.index(')')].split(','))
         try:
             rules[rule].append(value)
         except KeyError:
