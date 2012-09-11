@@ -53,30 +53,17 @@ def bfsolve(at, predicates, subs):
         raise StopIteration
     rule, value = predicates[at][:]
 
-    # Add subs if none
-    # if len(subs) == 0 and at == 0:
-    #     subs.append({})
-
-    # Replace all the predicates with the original parameters and known subs
-    # for p in value:
-    #     if arg(p):
-    #         p = args[int(p)]
-    #     if variable(p) and p in subs:
-    #         p = subs[p]
-
     if rule not in rules:
         raise StopIteration
 
     # Check against each possible rule for predicate
-    # poss = []
-    # for sub in subs:
     for match in rules[rule]:
         if not match:
             continue
         s = {}
         for k, v in subs.items():
             s[k] = v
-        # Is predicate?
+        
         if parsePredicate(match[0]):
             # Then all are predicates
             nPreds = map(parsePredicate, match)
@@ -95,9 +82,8 @@ def bfsolve(at, predicates, subs):
                             pred[1][k] = "ARGZ " + pred[1][k]
             except IndexError:
                 continue
-            # print nPreds
+
             for n in bfsolve(0, nPreds, {}):
-                # poss.append({})
                 for k, v in n.items():
                     # pop an argz off
                     k = k.split(None, 1)
@@ -107,28 +93,21 @@ def bfsolve(at, predicates, subs):
                     s[k] = v
                 for i in bfsolve(at + 1, predicates, s):
                     yield i
-            # if nSubs:
-            #     added = []
-            #     for k, v in nSubs[1].items():
-            #         added.append(k)
-            #         subs[k] = v
-            #     nSubs = bfsolve(at + 1, predicates, subs)
-            #     if nSubs[0]:
-            #         return nSubs
-            #     for a in added:
-            #         del subs[a]
         else:
-            # Check if each matches
+            # It is just a fact
 
             # Make sure both same length
             if len(match) != len(value):
                 continue
+
+            # Check if each matches
             for i in xrange(len(value)):
-                # If atom
+                # Compare if atoms
                 if atom(value[i]):
                     if value[i] != match[i]:
                         break
-                # If variable
+                # Compare substitute if variable
+                # If no substitute, add.
                 else:
                     if value[i] in s:
                         if match[i] != s[value[i]]:
