@@ -1,26 +1,40 @@
 grid = open("patches.txt").read().split()
+
+# this list ensures i only expand on each grid square at most once
+# this is basically the only thing i needed in terms of speed
 seen = [[0]*len(line) for line in grid]
 
-dr = [-1, -1, 0, 1, 1, 1, 0, -1]
-dc = [0, 1, 1, 1, 0, -1, -1, -1]
+# useful when doing graph search algorithms on a grid
+# i can just loop over this
+deltar = [-1, -1, 0, 1, 1, 1, 0, -1]
+deltac = [0, 1, 1, 1, 0, -1, -1, -1]
 
+# This had originally been recursive, but that blows stack memory
+# so I had to slightly alter it to be iterative...
 def dfs(r, c):
+    # Stack maintains a list of nodes i want to expand on
     stack = []
     stack.append((r, c))
     while stack:
-        r, c = stack.pop()
+        curr, curc = stack.pop()
         seen[r][c] = 1
+        # using the delta lists, i can easily go in the 8 directions
         for i in range(8):
-            nr = r + dr[i]
-            nc = c + dc[i]
+            nextr = curr + deltar[i]
+            nextc = curc + deltac[i]
+            # using exceptions to keep myself in bounds
             try:
-                if nr < 0 or nc < 0: continue
-                if seen[nr][nc]: continue
-                if grid[nr][nc] == '.': continue
-                stack.append((nr, nc))
+                # negative indices are valid, but we don't want to wrap
+                if nextr < 0 or nextc < 0: continue
+                # make sure we only expand each square once
+                if seen[nextr][nextc]: continue
+                if grid[nextr][nextc] == '.': continue
+                stack.append((nextr, nextc))
             except IndexError:
                 continue
 
+# count the patches by making sure we go through each patch once
+# using the seen array and dfsing
 ans = 0
 for r in range(len(grid)):
     for c in range(len(grid[r])):

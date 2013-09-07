@@ -1,3 +1,16 @@
+# umm, I may or may not clean up the code sometime soon
+
+# Basic gist of this algorithm is to represent everything as a list
+# where list[i] represents the coefficient of the term with degree i
+#   e.g. [3, 0, 4, 2] => 2x^3 + 4x^2 + 0x + 3
+# Adding is done just by adding respective values in list
+# Same with subtracting
+# Multiplying is going through each pair of elements in both lists
+#   multiplying them together, and adding it to the appropriate place
+#   in the resultant list
+# Exponentiation is multiplying by itself that many times
+#   you could also use pascal's triangle
+
 import re
 s = []
 line = input('RPN: ').split()

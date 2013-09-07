@@ -116,14 +116,29 @@ class Graph:
       ans.sort(key=lambda x: x.id)
       return ans
 
+# tries to pop a specified token from a string
 def pop(tokens, legal):
     if tokens and tokens[0].upper() in legal:
         tokens.pop(0)
         return True
     return False
 
+# same as pop, except this raises an exception if it fails
+# that's why, pop exception, or pope :P
 def pope(tokens, legal):
     if not pop(tokens, legal): raise ParseException
+
+# The rest of these functions try to emulate their respective grammar
+# points in the BNF - each try to match the tokens, and return the set
+# of nodes if it is correct, or false if it doesn't match the grammar
+# To check whether tokens match is done through the pop function, and
+# to check whether a symbol matches, I just call the function and check
+# its return value
+
+# Determining whether to return False or raise an exception
+# is not too hard - all grammar points have unique enough specifications
+# such that if it only partially matches one point, it cannot match another
+# point, so I just raise the exception there
 
 def label_condition(tokens, node, nodes):
     if not pop(tokens, ["LABEL"]): return False
@@ -169,22 +184,6 @@ def num_condition(tokens, node, nodes):
         if not pop(tokens, ["LABEL"]): raise ParseException
         if not tokens: raise ParseException
         l = tokens.pop(0)
-    if op == '==':
-        return set(n for n in nodes if n.degree(l) == v)
-    elif op == '<':
-        return set(n for n in nodes if n.degree(l) < v)
-    return set(n for n in nodes if n.degree(l) > v)
-
-def num_label_condition(tokens, node, nodes):
-    op = num_operator(tokens)
-    if not op: return False
-    v = num(tokens)
-    if v == '': raise ParseException
-    if not pop(tokens, ["NEIGHBOURS"]): raise ParseException
-    if not pop(tokens, ["WITH"]): raise ParseException
-    if not pop(tokens, ["LABEL"]): raise ParseException
-    if not tokens: raise ParseException
-    l = tokens.pop(0)
     if op == '==':
         return set(n for n in nodes if n.degree(l) == v)
     elif op == '<':
