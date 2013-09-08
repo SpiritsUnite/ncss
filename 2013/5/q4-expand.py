@@ -1,10 +1,9 @@
-# umm, I may or may not clean up the code sometime soon
-
 # Basic gist of this algorithm is to represent everything as a list
 # where list[i] represents the coefficient of the term with degree i
 #   e.g. [3, 0, 4, 2] => 2x^3 + 4x^2 + 0x + 3
+
 # Adding is done just by adding respective values in list
-# Same with subtracting
+# Subtracting is done similarly
 # Multiplying is going through each pair of elements in both lists
 #   multiplying them together, and adding it to the appropriate place
 #   in the resultant list
@@ -12,74 +11,87 @@
 #   you could also use pascal's triangle
 
 import re
-s = []
-line = input('RPN: ').split()
-for c in line:
-    if c in '+-*^':
-        b = s.pop()
-        a = s.pop()
-        if c == '+':
-            s.append([])
-            for i in range(max(len(a), len(b))):
-                s[-1].append(0)
-                try:
-                    s[-1][-1] += a[i]
-                except IndexError:
-                    pass
-                try:
-                    s[-1][-1] += b[i]
-                except IndexError:
-                    pass
-        elif c == '-':
-            s.append([])
-            for i in range(max(len(a), len(b))):
-                s[-1].append(0)
-                try:
-                    s[-1][-1] += a[i]
-                except IndexError:
-                    pass
-                try:
-                    s[-1][-1] -= b[i]
-                except IndexError:
-                    pass
-        elif c == '*':
-            s.append([0] * (len(a) + len(b)))
-            for i in range(len(a)):
-                for j in range(len(b)):
-                    s[-1][i + j] += a[i] * b[j]
-        else:
-            e = a
-            if b[0] > 1:
-                for k in range(b[0] - 1):
-                    res = [0] * (len(a) + len(e))
-                    for i in range(len(a)):
-                        for j in range(len(e)):
-                            res[i + j] += a[i] * e[j]
-                    a = res
-                s.append(res)
-            elif b[0] == 1:
-                s.append(a)
-            else:
-                s.append([1])
-    elif c == 'x':
-        s.append([0, 1])
+
+def add(a, b):
+    # create a 'zero polynomial' with enough space to add the two
+    result = [0] * max(len(a), len(b))
+    # add both onto the polynomial
+    for i in range(len(a)):
+        result[i] += a[i]
+    for i in range(len(b)):
+        result[i] += b[i]
+    return result
+
+def subtract(a, b):
+    result = [0] * max(len(a), len(b))
+    for i in range(len(a)):
+        result[i] += a[i]
+    for i in range(len(b)):
+        result[i] -= b[i]
+    return result
+
+def multiply(a, b):
+    result = [0] * (len(a) + len(b))
+    # for every possible pair, multiply and add onto result
+    for i in range(len(a)):
+        for j in range(len(b)):
+            result[i + j] += a[i] * b[j]
+    return result
+
+def exponentiate(a, b):
+    result = [1]
+    for i in range(b[0]):
+        result = multiply(result, a)
+    return result
+
+stack = []
+tokens = input('RPN: ').split()
+
+for token in tokens:
+    if token in '+-*^':
+        b = stack.pop()
+        a = stack.pop()
+
+        if token == '+':
+            stack.append(add(a, b))
+        elif token == '-':
+            stack.append(subtract(a, b))
+        elif token == '*':
+            stack.append(multiply(a, b))
+        elif token == '^':
+            stack.append(exponentiate(a, b))
+    elif token == 'x':
+        stack.append([0, 1])
     else:
-        s.append([int(c)])
-while s[-1]:
-    if s[-1][-1]:
+        stack.append([int(token)])
+
+# remove leading 0s in the answer
+result = stack.pop()
+while result:
+    if result[-1]:
         break
-    s[-1].pop()
-if s[-1]:
-    ans = '-' if s[-1][-1] < 0 else ''
-    ans += '%dx^%d' % (abs(s[-1][-1]), len(s[-1]) - 1)
-    for i in range(len(s[-1]) - 2, -1, -1):
-        if not s[-1][i]: continue
-        ans += ' + ' if s[-1][i] > 0 else ' - '
-        ans += '%dx^%d' % (abs(s[-1][i]), i)
+    result.pop()
+
+if result:
+    ans = ''
+    for k, v in reversed([i for i in enumerate(result)]):
+        if v:
+            ans += ' + %dx^%d' % (v, k)
+
+    # first term shouldn't have a '+ ' at the front
+    ans = ans[3:]
+
+    # answer isn't formatted properly, so we use regex to fix it
+    # turn '+ -' -> '- '
+    ans = re.sub(r'\+ -', '- ', ans)
+    # if the first term is -1x, turn it to -x
+    ans = re.sub(r'^-1x', '-x', ans)
+    # turn x^1 -> x
     ans = re.sub(r'\^1\b', '', ans)
+    # remove x^0
     ans = re.sub(r'x\^0\b', '', ans)
+    # turn 1x -> x
     ans = re.sub(r'\b1x', 'x', ans)
-    ans = re.sub(r'-1x', 'x', ans)
     print(ans)
 else:
     print('0')

@@ -1,4 +1,5 @@
 # interleavings(a, b) = union of interleavings(a[1:], b) and interleavings(a, b[1:])
+
 # basically, to get the interleavings for a pair of strings
 # we try find all interleavings that start with the first letter of a
 # and union it with all the interleavings that start with the first letter of b

@@ -29,27 +29,24 @@ class Graph:
     id is added or if a relationship between
     nonexisting nodes is created
     """
-    self.ids = []
-    self.nodes = {}
-    self.neigh = {}
     f = open(filename)
     for line in f:
         if not line.strip(): break
-        i, l = map(str.strip, line.split(':'))
-        if i in self.nodes:
+        id, label = map(str.strip, line.split(':'))
+        if id in self.nodes:
             raise ValueError
-        self.nodes[i] = Node(i, l)
-        self.neigh[i] = []
-        self.ids.append(i)
+        self.nodes[id] = Node(id, label)
+        self.neigh[id] = []
+        self.ids.append(id)
 
     for line in f:
-        fr, l, to = map(str.strip, line.split(':'))
-        if not l: l = None
+        fr, label, to = map(str.strip, line.split(':'))
+        if not label: label = None
         if fr not in self.nodes or to not in self.nodes:
             raise ValueError
-        self.nodes[fr].add_neighbour(self.nodes[to], l)
-        if l == None: l = ''
-        self.neigh[fr].append((to, l))
+        self.nodes[fr].add_neighbour(self.nodes[to], label)
+        if label == None: label = ''
+        self.neigh[fr].append((to, label))
 
   def output(self):
     """
@@ -82,6 +79,8 @@ class Graph:
     """
     if n1 not in self.nodes or n2 not in self.nodes:
         raise ValueError
+
+    # for this, i use floyd-warshal
     adjMat = [[1 if self.nodes[i].has_neighbour(self.nodes[j], None) else 1<<29
         for j in self.ids]
             for i in self.ids]
@@ -90,9 +89,9 @@ class Graph:
             for j in range(self.size()):
                 adjMat[i][j] = min(adjMat[i][j], adjMat[i][k] + adjMat[k][j])
 
-    a = adjMat[self.ids.index(n1)][self.ids.index(n2)]
-    if a == 1<<29: a = -1
-    return 0 if n1 == n2 else a
+    dist = adjMat[self.ids.index(n1)][self.ids.index(n2)]
+    if dist == 1<<29: dist = -1
+    return 0 if n1 == n2 else dist
 
   def get_node(self, id):
     """
@@ -134,6 +133,7 @@ def pope(tokens, legal):
 # To check whether tokens match is done through the pop function, and
 # to check whether a symbol matches, I just call the function and check
 # its return value
+# to do or and and, i use set's union and intersect functions
 
 # Determining whether to return False or raise an exception
 # is not too hard - all grammar points have unique enough specifications

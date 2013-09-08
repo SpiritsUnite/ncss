@@ -2,7 +2,7 @@ grid = open("patches.txt").read().split()
 
 # this list ensures i only expand on each grid square at most once
 # this is basically the only thing i needed in terms of speed
-seen = [[0]*len(line) for line in grid]
+seen = [[False]*len(line) for line in grid]
 
 # useful when doing graph search algorithms on a grid
 # i can just loop over this
@@ -17,7 +17,7 @@ def dfs(r, c):
     stack.append((r, c))
     while stack:
         curr, curc = stack.pop()
-        seen[r][c] = 1
+        seen[curr][curc] = True
         # using the delta lists, i can easily go in the 8 directions
         for i in range(8):
             nextr = curr + deltar[i]
